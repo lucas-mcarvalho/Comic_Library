@@ -1,8 +1,14 @@
 """Leitura de HQs compactadas (CBR/CBZ) com libarchive."""
 
 import io
+import os
 import re
+import sys
 from pathlib import Path
+
+if sys.platform == "win32":
+    _dll_dir = Path(sys._MEIPASS) if getattr(sys, "frozen", False) else Path(__file__).resolve().parent.parent
+    os.environ.setdefault("LIBARCHIVE", str(_dll_dir / "archive.dll"))
 
 import libarchive
 from PIL import Image

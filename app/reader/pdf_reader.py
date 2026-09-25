@@ -4,6 +4,8 @@ from pathlib import Path
 
 import pymupdf
 
+from app.library.metadata import Metadata, parse_pdf_metadata
+
 # Altura em pixels com que cada página é renderizada para leitura
 RENDER_HEIGHT = 2000
 
@@ -26,10 +28,10 @@ class PdfDocument:
         self._document.close()
 
 
-def render_cover(path: str | Path, max_width: int = 200) -> bytes:
-    """Renderiza a primeira página do PDF e retorna a imagem em PNG."""
+def read_details(path: str | Path, max_width: int) -> tuple[bytes, int, Metadata]:
+    """Capa em JPEG, total de páginas e os metadados do PDF."""
     with pymupdf.open(path) as document:
         page = document.load_page(0)
         zoom = max_width / page.rect.width
-        pixmap = page.get_pixmap(matrix=pymupdf.Matrix(zoom, zoom))
-        return pixmap.tobytes("png")
+        cover = page.get_pixmap(matrix=pymupdf.Matrix(zoom, zoom)).tobytes("jpeg", jpg_quality=88)
+        return cover, document.page_count, parse_pdf_metadata(document.metadata or {})

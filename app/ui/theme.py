@@ -51,7 +51,7 @@ QPushButton#primary {{
 }}
 QPushButton#primary:hover {{ background: {ACCENT_HOVER}; }}
 
-QLineEdit {{
+QLineEdit, QPlainTextEdit {{
     color: {TEXT};
     background: {BACKGROUND};
     border: 1px solid {BORDER};
@@ -59,13 +59,33 @@ QLineEdit {{
     padding: 6px 10px;
     selection-background-color: {ACCENT};
 }}
-QLineEdit:focus {{ border-color: {ACCENT}; }}
+QLineEdit:focus, QPlainTextEdit:focus {{ border-color: {ACCENT}; }}
+QPushButton:disabled {{ color: {TEXT_MUTED}; border-color: {BORDER}; }}
+QDialog {{ background: {SURFACE}; }}
 
 QListView {{ background: {BACKGROUND}; border: none; outline: none; }}
 QScrollArea {{ background: {READER_BACKGROUND}; border: none; }}
 
 QLabel#title {{ color: {TEXT}; font-size: 22px; font-weight: 600; }}
 QLabel#muted {{ color: {TEXT_MUTED}; }}
+QLabel#heading {{ color: {TEXT}; font-size: 16px; font-weight: 600; }}
+QLabel#section {{ color: {TEXT_MUTED}; font-size: 11px; font-weight: 700; letter-spacing: 1px; }}
+
+QScrollArea#detailsScroll, QWidget#detailsContent {{ background: transparent; }}
+QLabel#detailsTitle {{ color: {TEXT}; font-size: 28px; font-weight: 700; }}
+QLabel#detailsMeta {{ color: {TEXT}; font-size: 14px; }}
+QLabel#summary {{ color: {TEXT}; font-size: 15px; }}
+QLabel#summary[empty="true"] {{ color: {TEXT_MUTED}; font-style: italic; }}
+
+QPushButton#flat {{ background: transparent; border: none; color: {TEXT_MUTED}; padding: 6px 8px; }}
+QPushButton#flat:hover {{ color: {TEXT}; }}
+QPushButton#segment {{ border-radius: 0; padding: 5px 12px; font-size: 12px; }}
+QPushButton#segment[position="left"] {{ border-top-left-radius: 6px; border-bottom-left-radius: 6px; }}
+QPushButton#segment[position="right"] {{ border-top-right-radius: 6px; border-bottom-right-radius: 6px; border-left: none; }}
+QPushButton#segment:checked {{ background: {ACCENT}; color: white; border-color: {ACCENT}; }}
+
+QProgressBar {{ background: {BORDER}; border: none; border-radius: 2px; max-height: 4px; }}
+QProgressBar::chunk {{ background: {ACCENT}; border-radius: 2px; }}
 
 QStatusBar {{ background: {SURFACE}; color: {TEXT_MUTED}; border-top: 1px solid {BORDER}; }}
 QStatusBar::item {{ border: none; }}

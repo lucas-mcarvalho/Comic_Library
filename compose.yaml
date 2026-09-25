@@ -17,7 +17,10 @@ services:
       - ${XDG_RUNTIME_DIR:-/run/user/1000}:/tmp/runtime
       - /tmp/.X11-unix:/tmp/.X11-unix:ro
       - comic-config:/home/app/.config
+      - comic-data:/home/app/.local/share
 
 volumes:
   # Guarda as preferências do app (última pasta aberta) entre execuções
   comic-config:
+  # Banco da biblioteca: capas, descrições e progresso de leitura
+  comic-data:

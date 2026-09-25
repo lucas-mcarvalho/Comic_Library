@@ -2,6 +2,7 @@
 
 from pathlib import Path
 
+from app.library.metadata import Metadata, parse_filename
 from app.reader import archive_reader, pdf_reader
 
 
@@ -16,7 +17,14 @@ def open_document(path: str | Path):
     return archive_reader.ArchiveDocument(path)
 
 
-def render_cover(path: str | Path, max_width: int = 200) -> bytes:
-    if _is_pdf(path):
-        return pdf_reader.render_cover(path, max_width)
-    return archive_reader.render_cover(path, max_width)
+def read_details(path: str | Path, max_width: int = 200) -> tuple[bytes, int, Metadata]:
+    """Capa (JPEG), total de páginas e metadados; o que faltar no arquivo vem do nome dele."""
+    reader = pdf_reader if _is_pdf(path) else archive_reader
+    cover, page_count, metadata = reader.read_details(path, max_width)
+
+    from_name = parse_filename(Path(path).stem)
+    metadata = metadata or Metadata()
+    metadata.series = metadata.series or from_name.series
+    metadata.number = metadata.number or from_name.number
+    metadata.year = metadata.year or from_name.year
+    return cover, page_count, metadata

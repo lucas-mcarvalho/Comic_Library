@@ -17,8 +17,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 RUN groupadd --gid "$GID" app \
     && useradd --uid "$UID" --gid "$GID" --create-home app \
-    && mkdir -p /home/app/.config /comics \
-    && chown app:app /home/app/.config
+    && mkdir -p /home/app/.config /home/app/.local/share /comics \
+    && chown -R app:app /home/app/.config /home/app/.local
 
 WORKDIR /opt/comic-library
 

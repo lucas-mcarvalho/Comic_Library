@@ -3,7 +3,7 @@
 from collections import OrderedDict
 from enum import Enum
 
-from PySide6.QtCore import QEvent, Qt, QTimer
+from PySide6.QtCore import QEvent, Qt, QTimer, Signal
 from PySide6.QtGui import QAction, QImage, QKeySequence, QPixmap
 from PySide6.QtWidgets import QLabel, QMainWindow, QScrollArea, QSizePolicy, QSlider, QToolBar, QWidget
 
@@ -22,8 +22,12 @@ class FitMode(Enum):
 
 
 class ReaderWindow(QMainWindow):
-    def __init__(self, comic: Comic):
+    # (hq, página atual, total de páginas): emitido a cada troca de página, para salvar o progresso
+    page_changed = Signal(object, int, int)
+
+    def __init__(self, comic: Comic, start_page: int = 0):
         super().__init__()
+        self.comic = comic
         self.setWindowTitle(f"{comic.title} — Comic Library")
         self.resize(1000, 900)
 
@@ -55,7 +59,7 @@ class ReaderWindow(QMainWindow):
         self._build_top_bar(comic.title)
         self._build_bottom_bar()
         self.set_fit_mode(FitMode.PAGE)
-        self.go_to_page(0)
+        self.go_to_page(start_page)
 
     # ---------- construção da interface ----------
 
@@ -171,6 +175,7 @@ class ReaderWindow(QMainWindow):
         self.slider.blockSignals(False)
         self.prev_action.setEnabled(index > 0)
         self.next_action.setEnabled(index < total - 1)
+        self.page_changed.emit(self.comic, index, total)
 
         # Deixa a próxima página pronta depois que a atual já foi exibida
         if index + 1 < total:
@@ -187,6 +192,8 @@ class ReaderWindow(QMainWindow):
         self.go_to_page(self.page_index - 1)
 
     def display_page(self):
+        if self.closed:
+            return
         image = self.page_image(self.page_index)
         if image.isNull():
             self.page_label.setText("Não foi possível exibir esta página.")
@@ -288,6 +295,7 @@ class ReaderWindow(QMainWindow):
 
     def closeEvent(self, event):
         self.closed = True
+        self.resize_timer.stop()
         self.cache.clear()
         self.document.close()
         super().closeEvent(event)

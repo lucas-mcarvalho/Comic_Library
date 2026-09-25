@@ -1,0 +1,23 @@
+services:
+  comic-library:
+    build:
+      context: .
+      args:
+        UID: ${UID:-1000}
+        GID: ${GID:-1000}
+    image: comic-library
+    container_name: comic-library
+    environment:
+      # Wayland (usado primeiro) e X11 (alternativa) do host
+      WAYLAND_DISPLAY: ${WAYLAND_DISPLAY:-}
+      DISPLAY: ${DISPLAY:-:0}
+      XDG_RUNTIME_DIR: /tmp/runtime
+    volumes:
+      - ${COMICS_DIR:-./comics}:/comics:ro
+      - ${XDG_RUNTIME_DIR:-/run/user/1000}:/tmp/runtime
+      - /tmp/.X11-unix:/tmp/.X11-unix:ro
+      - comic-config:/home/app/.config
+
+volumes:
+  # Guarda as preferências do app (última pasta aberta) entre execuções
+  comic-config:
